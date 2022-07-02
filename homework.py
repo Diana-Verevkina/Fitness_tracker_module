@@ -100,8 +100,8 @@ class Swimming(Training):
         return self.action * self.LEN_STEP / self.M_IN_KM
 
     def get_mean_speed(self) -> float:
-        return self.length_pool * self.count_pool\
-               / self.M_IN_KM / self.duration
+        return self.length_pool \
+               * self.count_pool / self.M_IN_KM / self.duration
 
     def get_spent_calories(self) -> float:
         coeff_calorie_5 = 1.1
@@ -131,9 +131,9 @@ def main(training: Training) -> None:
 
 if __name__ == '__main__':
     packages = {
-         'SWM': [720, 1, 80, 25, 40],
-         'RUN': [15000, 1, 75],
-         'WLK': [9000, 1, 75, 180]
+        'SWM': [720, 1, 80, 25, 40],
+        'RUN': [15000, 1, 75],
+        'WLK': [9000, 1, 75, 180]
     }
 
     for workout_type, data in packages.items():
