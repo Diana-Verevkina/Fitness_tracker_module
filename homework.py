@@ -17,7 +17,7 @@ class InfoMessage:
                "Потрачено ккал: {:.3f}.")
 
     def get_message(self) -> str:
-        return str(self.MESSAGE.format(*asdict(self).values()))  # тесты не проходит без str()
+        return str(self.MESSAGE.format(*asdict(self).values()))
 
 
 class Training:
