@@ -12,12 +12,12 @@ class InfoMessage:
     speed: float
     calories: float
 
-    MESSAGE = ("Тип тренировки: {}; Длительность: {:.3f}; "
-               "Дистанция: {:.3f}; Ср. скорость: {:.3f}; "
-               "Потрачено ккал: {:.3f}")
+    MESSAGE = ("Тип тренировки: {}; Длительность: {:.3f} ч.; "
+               "Дистанция: {:.3f} км; Ср. скорость: {:.3f} км/ч; "
+               "Потрачено ккал: {:.3f}.")
 
     def get_message(self) -> str:
-        return self.MESSAGE.format(*asdict(self).values())
+        return str(self.MESSAGE.format(*asdict(self).values()))  # тесты не проходит без str()
 
 
 class Training:
