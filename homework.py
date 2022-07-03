@@ -15,6 +15,7 @@ class InfoMessage:
     MESSAGE = ("Тип тренировки: {}; Длительность: {:.3f}; "
                "Дистанция: {:.3f}; Ср. скорость: {:.3f}; "
                "Потрачено ккал: {:.3f}")
+
     def get_message(self) -> str:
         return self.MESSAGE.format(*asdict(self).values())
 
@@ -36,7 +37,6 @@ class Training:
         self.duration = duration
         self.weight = weight
 
-
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
         return self.action * self.LEN_STEP / self.M_IN_KM
@@ -52,8 +52,8 @@ class Training:
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
         return InfoMessage(type(self).__name__, self.duration,
-                              self.get_distance(), self.get_mean_speed(),
-                              self.get_spent_calories())
+                           self.get_distance(), self.get_mean_speed(),
+                           self.get_spent_calories())
 
 
 class Running(Training):
@@ -64,8 +64,8 @@ class Running(Training):
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_MEAN_SPEED * self.get_mean_speed()
-                - self.COEFF_SPEED) * self.weight /
-                self.M_IN_KM * self.duration * self.MINUTES)
+                - self.COEFF_SPEED) * self.weight
+                / self.M_IN_KM * self.duration * self.MINUTES)
 
 
 class SportsWalking(Training):
@@ -108,8 +108,8 @@ class Swimming(Training):
 
     def get_mean_speed(self) -> float:
         return (self.length_pool
-            * self.count_pool / self.M_IN_KM
-            / self.duration)
+                * self.count_pool / self.M_IN_KM
+                / self.duration)
 
     def get_spent_calories(self) -> float:
         return ((self.get_mean_speed() + self.COEFF_SPEED)
@@ -128,8 +128,8 @@ def read_package(workout_type: str, data: list) -> Training:
         return types_of_training[workout_type](*data)
 
     print('training not found')
-    #не поняла, как вызвать аварийный возврат с исключением.
-    #пробовала try - exept и raise
+    # не поняла, как вызвать аварийный возврат с исключением.
+    # пробовала try - exept и raise
 
 
 def main(training: Training) -> None:
