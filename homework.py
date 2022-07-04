@@ -12,8 +12,10 @@ class InfoMessage:
     speed: float
     calories: float
 
-    MESSAGE = ("Тип тренировки: {training_type}; Длительность: {duration:.3f} ч.; "
-               "Дистанция: {distance:.3f} км; Ср. скорость: {speed:.3f} км/ч; "
+    MESSAGE = ("Тип тренировки: {training_type}; "
+               "Длительность: {duration:.3f} ч.; "
+               "Дистанция: {distance:.3f} км; "
+               "Ср. скорость: {speed:.3f} км/ч; "
                "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self) -> str:
@@ -48,7 +50,8 @@ class Training:
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         raise NotImplementedError(f"Вызван метод из "
-                                  f"родительского класса {type(self).__name__}")
+                                  f"родительского класса "
+                                  f"{type(self).__name__}")
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -85,7 +88,8 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_WEIGHT_1 * self.weight
-                + (self.get_mean_speed() ** self.SPEED_EXHIBITOR // self.height)
+                + (self.get_mean_speed() **
+                    self.SPEED_EXHIBITOR // self.height)
                 * self.COEFF_WEIGHT_2 * self.weight)
                 * self.duration * self.MINUTES)
 
