@@ -21,6 +21,7 @@ class InfoMessage:
     def get_message(self) -> str:
         return self.MESSAGE.format(**asdict(self))
 
+
 @dataclass()
 class Training:
     """Базовый класс тренировки."""
@@ -64,6 +65,7 @@ class Running(Training):
         return ((self.COEFF_MEAN_SPEED * self.get_mean_speed()
                 - self.COEFF_SPEED) * self.weight
                 / self.M_IN_KM * self.duration * self.MINUTES)
+
 
 @dataclass()
 class SportsWalking(Training):
@@ -123,8 +125,8 @@ def read_package(workout_type: str, data: list) -> Training:
         raise ValueError(f"Значение {workout_type} не найдено в словаре")
 
     elif len(data) != len(fields(types_of_training[workout_type])):
-        raise TypeError(f"Количество передаваемых аргументов не совпадает "
-                        f"с количеством агрументов класса")
+        raise TypeError("Количество передаваемых аргументов не совпадает "
+                        "с количеством агрументов класса")
 
     return types_of_training[workout_type](*data)
 
