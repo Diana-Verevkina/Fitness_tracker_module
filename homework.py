@@ -12,19 +12,19 @@ class InfoMessage:
     speed: float
     calories: float
 
-    MESSAGE = ("Тип тренировки: {}; Длительность: {:.3f} ч.; "
-               "Дистанция: {:.3f} км; Ср. скорость: {:.3f} км/ч; "
-               "Потрачено ккал: {:.3f}.")
+    MESSAGE = ("Тип тренировки: {training_type}; Длительность: {duration:.3f} ч.; "
+               "Дистанция: {distance:.3f} км; Ср. скорость: {speed:.3f} км/ч; "
+               "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self) -> str:
-        return str(self.MESSAGE.format(*asdict(self).values()))
+        return self.MESSAGE.format(**asdict(self))
 
 
 class Training:
     """Базовый класс тренировки."""
 
     LEN_STEP: float = 0.65
-    M_IN_KM: int = 1000
+    M_IN_KM: float = 1000
     MINUTES: int = 60
     # Количество действий, длительность тренировки, вес спортсмена
 
@@ -47,7 +47,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError()
+        raise NotImplementedError(f"Вызван метод из "
+                                  f"родительского класса {type(self).__name__}")
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -73,7 +74,7 @@ class SportsWalking(Training):
 
     COEFF_WEIGHT_1: float = 0.035
     COEFF_WEIGHT_2: float = 0.029
-    COEFF_SPEED: int = 2
+    SPEED_EXHIBITOR: int = 2
 
     def __init__(self, action: int,
                  duration: float,
@@ -84,7 +85,7 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_WEIGHT_1 * self.weight
-                + (self.get_mean_speed() ** self.COEFF_SPEED // self.height)
+                + (self.get_mean_speed() ** self.SPEED_EXHIBITOR // self.height)
                 * self.COEFF_WEIGHT_2 * self.weight)
                 * self.duration * self.MINUTES)
 
@@ -124,12 +125,10 @@ def read_package(workout_type: str, data: list) -> Training:
         'WLK': SportsWalking
     }
 
-    if workout_type in types_of_training:
-        return types_of_training[workout_type](*data)
+    if workout_type not in types_of_training:
+        raise ValueError(f"Значение {workout_type} не найдено в словаре")
 
-    print('training not found')
-    # не поняла, как вызвать аварийный возврат с исключением.
-    # пробовала try - exept и raise
+    return types_of_training[workout_type](*data)
 
 
 def main(training: Training) -> None:
