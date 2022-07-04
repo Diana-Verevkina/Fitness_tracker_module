@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from typing import Dict, Type
 
 
@@ -21,23 +21,16 @@ class InfoMessage:
     def get_message(self) -> str:
         return self.MESSAGE.format(**asdict(self))
 
-
+@dataclass()
 class Training:
     """Базовый класс тренировки."""
 
-    LEN_STEP: float = 0.65
-    M_IN_KM: float = 1000
-    MINUTES: int = 60
-    # Количество действий, длительность тренировки, вес спортсмена
-
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
-        self.action = action
-        self.duration = duration
-        self.weight = weight
+    action: int
+    duration: float
+    weight: float
+    LEN_STEP = 0.65
+    M_IN_KM = 1000
+    MINUTES = 60
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -60,31 +53,29 @@ class Training:
                            self.get_spent_calories())
 
 
+@dataclass()
 class Running(Training):
     """Тренировка: бег."""
 
-    COEFF_MEAN_SPEED: int = 18
-    COEFF_SPEED: int = 20
+    COEFF_MEAN_SPEED = 18
+    COEFF_SPEED = 20
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_MEAN_SPEED * self.get_mean_speed()
                 - self.COEFF_SPEED) * self.weight
                 / self.M_IN_KM * self.duration * self.MINUTES)
 
-
+@dataclass()
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    COEFF_WEIGHT_1: float = 0.035
-    COEFF_WEIGHT_2: float = 0.029
-    SPEED_EXHIBITOR: int = 2
-
-    def __init__(self, action: int,
-                 duration: float,
-                 weight: float,
-                 height: float) -> None:
-        super().__init__(action, duration, weight)
-        self.height = height
+    action: int
+    duration: float
+    weight: float
+    height: float
+    COEFF_WEIGHT_1 = 0.035
+    COEFF_WEIGHT_2 = 0.029
+    SPEED_EXHIBITOR = 2
 
     def get_spent_calories(self) -> float:
         return ((self.COEFF_WEIGHT_1 * self.weight
@@ -94,19 +85,18 @@ class SportsWalking(Training):
                 * self.duration * self.MINUTES)
 
 
+@dataclass()
 class Swimming(Training):
     """Тренировка: плавание."""
 
-    LEN_STEP: float = 1.38
-    COEFF_SPEED: float = 1.1
-    COEFF_WEIGHT: int = 2
-
-    def __init__(self, action: int, duration: float,
-                 weight: float, length_pool: float,
-                 count_pool: int) -> None:
-        super().__init__(action, duration, weight)
-        self.length_pool = length_pool
-        self.count_pool = count_pool
+    action: int
+    duration: float
+    weight: float
+    length_pool: float
+    count_pool: int
+    LEN_STEP = 1.38
+    COEFF_SPEED = 1.1
+    COEFF_WEIGHT = 2
 
     def get_distance(self) -> float:
         return self.action * self.LEN_STEP / self.M_IN_KM
@@ -131,6 +121,10 @@ def read_package(workout_type: str, data: list) -> Training:
 
     if workout_type not in types_of_training:
         raise ValueError(f"Значение {workout_type} не найдено в словаре")
+
+    elif len(data) != len(fields(types_of_training[workout_type])):
+        raise TypeError(f"Количество передаваемых аргументов не совпадает "
+                        f"с количеством агрументов класса")
 
     return types_of_training[workout_type](*data)
 
