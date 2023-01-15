@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict, fields
+from dataclasses import asdict, dataclass, fields
 from typing import Dict, Type
 
 
@@ -43,8 +43,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError(f"Вызван метод из "
-                                  f"родительского класса "
+        raise NotImplementedError(f"Вызван метод из родительского класса "
                                   f"{type(self).__name__}")
 
     def show_training_info(self) -> InfoMessage:
@@ -120,14 +119,6 @@ def read_package(workout_type: str, data: list) -> Training:
         'RUN': Running,
         'WLK': SportsWalking
     }
-
-    if workout_type not in types_of_training:
-        raise ValueError(f"Значение {workout_type} не найдено в словаре")
-
-    elif len(data) != len(fields(types_of_training[workout_type])):
-        raise TypeError("Количество передаваемых аргументов не совпадает "
-                        "с количеством агрументов класса")
-
     return types_of_training[workout_type](*data)
 
 
@@ -144,4 +135,16 @@ if __name__ == '__main__':
     }
 
     for workout_type, data in packages.items():
-        main(read_package(workout_type, data))
+        try:
+            main(read_package(workout_type, data))
+        except TypeError("Количество передаваемых аргументов не совпадает "
+                         "с количеством агрументов класса") as tError:
+            print(tError)
+        except KeyError(f"Ошибка. Ключ {workout_type} отсутствует в словаре "
+                        f"types_of_training") as kError:
+            print(kError)
+        except NotImplementedError("Отсутствует реализация "
+                                   "метода в классе") as notimplError:
+            print(notimplError)
+        except:
+            print("Упс, что-то пошло не так...")
